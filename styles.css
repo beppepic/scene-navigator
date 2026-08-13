@@ -1,0 +1,11 @@
+.workspace-leaf-content[data-type="scene-navigator-view"] .view-content {
+  padding-top: var(--size-4-1);
+}
+
+.workspace-leaf-content[data-type="scene-navigator-view"]
+  .scene-navigator-item
+  .tree-item-inner {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,10 @@
+{
+  "id": "scene-navigator",
+  "name": "Scene Navigator",
+  "version": "1.0.0",
+  "minAppVersion": "1.7.2",
+  "description": "Navigate single-line HTML comments in the active Markdown note.",
+  "author": "Beppe",
+  "authorUrl": "https://github.com/beppepic",
+  "isDesktopOnly": false
+}
