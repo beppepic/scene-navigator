@@ -3,6 +3,7 @@ import {
   MarkdownView,
   Menu,
   Notice,
+  Platform,
   Plugin,
   TFile,
   type Editor,
@@ -38,6 +39,12 @@ export default class SceneNavigatorPlugin extends Plugin {
       VIEW_TYPE_SCENE_NAVIGATOR,
       (leaf) => new SceneNavigatorView(leaf, this),
     );
+
+    if (Platform.isMobile) {
+      this.addRibbonIcon("list-tree", "Open scene navigator", () => {
+        void this.activateView();
+      });
+    }
 
     this.addCommand({
       id: "open-navigator",

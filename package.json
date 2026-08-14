@@ -1,6 +1,6 @@
 {
   "name": "obsidian-scene-navigator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Navigate single-line HTML comments in the active Obsidian note.",
   "main": "main.js",
   "type": "module",

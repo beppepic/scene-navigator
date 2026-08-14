@@ -32,7 +32,9 @@ file format, and your notes remain fully usable without the plugin.
 ## Usage
 
 1. Open a Markdown note containing single-line HTML comments.
-2. Run **Scene Navigator: Open navigator** from the Command Palette.
+2. On desktop, run **Scene Navigator: Open navigator** from the Command
+   Palette. On mobile, use either the Scene Navigator ribbon button or the same
+   command.
 3. Select a scene to move the editor cursor to that comment.
 
 The magnifying-glass button filters the visible list. The second toolbar button

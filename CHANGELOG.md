@@ -2,6 +2,11 @@
 
 All notable changes to Scene Navigator are documented in this file.
 
+## 1.1.1 — 2026-08-14
+
+- Restored the Scene Navigator ribbon launcher on mobile only.
+- Kept the desktop ribbon uncluttered.
+
 ## 1.1.0 — 2026-08-14
 
 - Added scene actions for copying, duplicating, and cutting a complete scene.
