@@ -1,13 +1,20 @@
 import { EditorView } from "@codemirror/view";
 import {
   MarkdownView,
+  Menu,
+  Notice,
   Plugin,
   TFile,
   type Editor,
+  type MenuPositionDef,
   type WorkspaceLeaf,
 } from "obsidian";
 
-import { extractSceneComments, type Scene } from "./scenes";
+import {
+  extractSceneComments,
+  getSceneRange,
+  type Scene,
+} from "./scenes";
 import {
   SceneNavigatorView,
   VIEW_TYPE_SCENE_NAVIGATOR,
@@ -31,10 +38,6 @@ export default class SceneNavigatorPlugin extends Plugin {
       VIEW_TYPE_SCENE_NAVIGATOR,
       (leaf) => new SceneNavigatorView(leaf, this),
     );
-
-    this.addRibbonIcon("list-tree", "Open scene navigator", () => {
-      void this.activateView();
-    });
 
     this.addCommand({
       id: "open-navigator",
@@ -190,6 +193,39 @@ export default class SceneNavigatorPlugin extends Plugin {
     this.updateCurrentSceneFromEditor(true);
   }
 
+  showSceneMenu(
+    file: TFile | null,
+    scene: Scene,
+    position: MenuPositionDef,
+    parentEl: HTMLElement,
+  ): void {
+    if (!file) {
+      return;
+    }
+
+    const menu = new Menu().setParentElement(parentEl);
+    menu.addItem((item) =>
+      item
+        .setTitle("Copy scene")
+        .setIcon("copy")
+        .onClick(() => void this.performSceneAction(file, scene, "copy")),
+    );
+    menu.addItem((item) =>
+      item
+        .setTitle("Duplicate scene")
+        .setIcon("copy-plus")
+        .onClick(() => void this.performSceneAction(file, scene, "duplicate")),
+    );
+    menu.addSeparator();
+    menu.addItem((item) =>
+      item
+        .setTitle("Cut scene")
+        .setIcon("scissors")
+        .onClick(() => void this.performSceneAction(file, scene, "cut")),
+    );
+    menu.showAtPosition(position, parentEl.ownerDocument);
+  }
+
   private trackFile(file: TFile | null): void {
     if (!(file instanceof TFile) || file.extension !== "md") {
       this.currentFile = null;
@@ -243,6 +279,78 @@ export default class SceneNavigatorPlugin extends Plugin {
     }
 
     return null;
+  }
+
+  private async performSceneAction(
+    file: TFile,
+    targetScene: Scene,
+    action: "copy" | "duplicate" | "cut",
+  ): Promise<void> {
+    const match = this.findMarkdownView(file);
+    if (!match) {
+      new Notice("The note is no longer open.");
+      return;
+    }
+
+    const { editor } = match.view;
+    const markdown = editor.getValue();
+    const scenes = extractSceneComments(markdown);
+    const sceneIndex = scenes.findIndex(
+      (scene) =>
+        scene.line === targetScene.line &&
+        scene.ch === targetScene.ch &&
+        scene.text === targetScene.text,
+    );
+    const range = getSceneRange(
+      scenes,
+      sceneIndex,
+      editor.offsetToPos(markdown.length),
+    );
+
+    if (!range) {
+      new Notice("The scene changed. Try again.");
+      return;
+    }
+
+    const sceneText = editor.getRange(range.from, range.to);
+
+    if (action === "copy") {
+      if (await this.writeClipboard(sceneText)) {
+        new Notice("Scene copied.");
+      }
+      return;
+    }
+
+    if (action === "cut" && !(await this.writeClipboard(sceneText))) {
+      return;
+    }
+
+    this.trackMarkdownView(match.view, match.leaf);
+    this.app.workspace.setActiveLeaf(match.leaf, { focus: true });
+
+    if (action === "duplicate") {
+      editor.replaceRange(sceneText, range.to);
+      editor.setCursor(range.to);
+      new Notice("Scene duplicated.");
+    } else {
+      editor.replaceRange("", range.from, range.to);
+      editor.setCursor(range.from);
+      new Notice("Scene cut.");
+    }
+
+    editor.focus();
+    this.render(file, extractSceneComments(editor.getValue()));
+    this.updateCurrentSceneFromEditor(true);
+  }
+
+  private async writeClipboard(text: string): Promise<boolean> {
+    try {
+      await window.activeWindow.navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      new Notice("Could not write to the clipboard.");
+      return false;
+    }
   }
 
   private async refreshFromEditor(editor: Editor): Promise<void> {

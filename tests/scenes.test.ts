@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { extractSceneComments, findCurrentScene } from "../src/scenes";
+import {
+  extractSceneComments,
+  findCurrentScene,
+  getSceneRange,
+} from "../src/scenes";
 
 describe("extractSceneComments", () => {
   it("extracts every single-line HTML comment in document order", () => {
@@ -55,5 +59,29 @@ describe("findCurrentScene", () => {
     expect(findCurrentScene(scenes, { line: 2, ch: 25 })?.text).toBe("second");
     expect(findCurrentScene(scenes, { line: 2, ch: 26 })?.text).toBe("third");
     expect(findCurrentScene(scenes, { line: 99, ch: 0 })?.text).toBe("third");
+  });
+});
+
+describe("getSceneRange", () => {
+  const scenes = extractSceneComments(
+    "<!-- first -->\ntext\n<!-- second -->\nlast",
+  );
+
+  it("ends a scene at the beginning of the next comment", () => {
+    expect(getSceneRange(scenes, 0, { line: 3, ch: 4 })).toEqual({
+      from: { line: 0, ch: 0 },
+      to: { line: 2, ch: 0 },
+    });
+  });
+
+  it("ends the final scene at the end of the document", () => {
+    expect(getSceneRange(scenes, 1, { line: 3, ch: 4 })).toEqual({
+      from: { line: 2, ch: 0 },
+      to: { line: 3, ch: 4 },
+    });
+  });
+
+  it("returns null for a scene that no longer exists", () => {
+    expect(getSceneRange(scenes, -1, { line: 3, ch: 4 })).toBeNull();
   });
 });

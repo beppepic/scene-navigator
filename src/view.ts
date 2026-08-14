@@ -1,5 +1,6 @@
 import {
   ItemView,
+  Platform,
   SearchComponent,
   setIcon,
   setTooltip,
@@ -13,6 +14,8 @@ import type SceneNavigatorPlugin from "./main";
 import { findCurrentScene, type Scene } from "./scenes";
 
 export const VIEW_TYPE_SCENE_NAVIGATOR = "scene-navigator-view";
+const LONG_PRESS_DELAY_MS = 550;
+const LONG_PRESS_MOVE_TOLERANCE_PX = 10;
 
 interface SceneNavigatorViewState extends Record<string, unknown> {
   followCurrentScene?: boolean;
@@ -31,6 +34,7 @@ export class SceneNavigatorView extends ItemView {
   private followButtonEl: HTMLElement | null = null;
   private followCurrentScene = false;
   private readonly sceneItemEls = new Map<string, HTMLElement>();
+  private readonly longPressTimers = new Set<number>();
   private activeSceneKey: string | null = null;
   private activeItemEl: HTMLElement | null = null;
 
@@ -80,6 +84,7 @@ export class SceneNavigatorView extends ItemView {
     this.searchButtonEl = null;
     this.searchComponent = null;
     this.followButtonEl = null;
+    this.clearLongPressTimers();
     this.sceneItemEls.clear();
     this.activeSceneKey = null;
     this.activeItemEl = null;
@@ -257,6 +262,7 @@ export class SceneNavigatorView extends ItemView {
     }
 
     this.listEl.empty();
+    this.clearLongPressTimers();
     this.sceneItemEls.clear();
     this.activeItemEl = null;
 
@@ -309,6 +315,7 @@ export class SceneNavigatorView extends ItemView {
       attr: {
         role: "button",
         tabindex: "0",
+        "aria-haspopup": "menu",
         "aria-label": scene.text || "Empty HTML comment",
       },
     });
@@ -323,16 +330,98 @@ export class SceneNavigatorView extends ItemView {
       void this.plugin.navigateTo(this.file, scene);
     };
 
-    itemEl.addEventListener("click", navigate);
+    let suppressNextClick = false;
+    let ignoreContextMenuUntil = 0;
+    let longPressTimer: number | null = null;
+    let pointerStart = { x: 0, y: 0 };
+
+    const openMenu = (x: number, y: number): void => {
+      this.plugin.showSceneMenu(this.file, scene, { x, y }, itemEl);
+    };
+    const cancelLongPress = (): void => {
+      if (longPressTimer !== null) {
+        window.clearTimeout(longPressTimer);
+        this.longPressTimers.delete(longPressTimer);
+        longPressTimer = null;
+      }
+    };
+
+    itemEl.addEventListener("click", (event) => {
+      if (suppressNextClick) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressNextClick = false;
+        return;
+      }
+      navigate();
+    });
+    itemEl.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      cancelLongPress();
+
+      if (Date.now() < ignoreContextMenuUntil) {
+        return;
+      }
+
+      openMenu(event.clientX, event.clientY);
+    });
     itemEl.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         navigate();
+      } else if (
+        event.key === "ContextMenu" ||
+        (event.shiftKey && event.key === "F10")
+      ) {
+        event.preventDefault();
+        const rect = itemEl.getBoundingClientRect();
+        openMenu(rect.left + 12, rect.bottom);
       }
     });
+
+    if (Platform.isMobile) {
+      itemEl.addEventListener("pointerdown", (event) => {
+        if (event.pointerType !== "touch") {
+          return;
+        }
+
+        cancelLongPress();
+        pointerStart = { x: event.clientX, y: event.clientY };
+        longPressTimer = window.setTimeout(() => {
+          if (longPressTimer !== null) {
+            this.longPressTimers.delete(longPressTimer);
+          }
+          longPressTimer = null;
+          suppressNextClick = true;
+          ignoreContextMenuUntil = Date.now() + 1_000;
+          openMenu(pointerStart.x, pointerStart.y);
+        }, LONG_PRESS_DELAY_MS);
+        this.longPressTimers.add(longPressTimer);
+      });
+      itemEl.addEventListener("pointermove", (event) => {
+        if (
+          Math.hypot(
+            event.clientX - pointerStart.x,
+            event.clientY - pointerStart.y,
+          ) > LONG_PRESS_MOVE_TOLERANCE_PX
+        ) {
+          cancelLongPress();
+        }
+      });
+      itemEl.addEventListener("pointerup", cancelLongPress);
+      itemEl.addEventListener("pointercancel", cancelLongPress);
+    }
   }
 
   private getSceneKey(scene: Scene): string {
     return `${scene.line}:${scene.ch}`;
+  }
+
+  private clearLongPressTimers(): void {
+    for (const timer of this.longPressTimers) {
+      window.clearTimeout(timer);
+    }
+    this.longPressTimers.clear();
   }
 }

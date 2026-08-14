@@ -1,8 +1,8 @@
 # Scene Navigator
 
-Scene Navigator is a minimal, read-only scene outline for Obsidian. It lists
-single-line HTML comments from the active Markdown note and lets you jump to
-their exact position.
+Scene Navigator is a minimal scene outline for Obsidian. It lists single-line
+HTML comments from the active Markdown note and lets you jump to their exact
+position.
 
 ```markdown
 <!-- first encounter – v.07 -->
@@ -19,6 +19,7 @@ file format, and your notes remain fully usable without the plugin.
 
 - Lists every single-line `<!-- HTML comment -->` in document order.
 - Opens each comment at its exact editor position.
+- Copies, duplicates, or cuts a complete scene from its comment to the next one.
 - Updates when you switch notes, edit comments, or Obsidian reloads a file.
 - Searches scenes from a compact toolbar modeled after Obsidian's Outline view.
 - Highlights the scene containing the cursor.
@@ -31,13 +32,23 @@ file format, and your notes remain fully usable without the plugin.
 ## Usage
 
 1. Open a Markdown note containing single-line HTML comments.
-2. Select the **Scene Navigator** ribbon icon, or run **Scene Navigator: Open
-   navigator** from the Command Palette.
+2. Run **Scene Navigator: Open navigator** from the Command Palette.
 3. Select a scene to move the editor cursor to that comment.
 
 The magnifying-glass button filters the visible list. The second toolbar button
 enables or disables automatic scrolling to the scene at the current cursor
 position.
+
+Right-click a scene on desktop, or press and hold it on mobile, to open these
+actions:
+
+- **Copy scene** copies everything from the selected HTML comment up to, but not
+  including, the next HTML comment.
+- **Duplicate scene** inserts an exact copy at the end of that range.
+- **Cut scene** copies the same range and then removes it from the note.
+
+For the final scene, the range ends at the end of the file. Duplicate and cut
+are ordinary editor changes and can be undone with Obsidian's **Undo** command.
 
 You can drag the view between sidebars using Obsidian's standard pane controls.
 
@@ -48,7 +59,8 @@ Scene Navigator intentionally:
 - reads only single-line HTML comments;
 - ignores multiline HTML comments and `%% Obsidian comments %%`;
 - does not depend on headings;
-- does not edit comments or Markdown files;
+- changes note content only when you explicitly choose **Duplicate scene** or
+  **Cut scene**, using ordinary undoable editor operations;
 - does not add IDs, tags, frontmatter, block IDs, or other syntax;
 - does not create auxiliary vault files or store scenes in a database.
 
@@ -95,7 +107,9 @@ releases and are not committed to the repository.
 ## Privacy and permissions
 
 Scene Navigator works locally. It makes no network requests, collects no
-telemetry, creates no database, and writes no note content.
+telemetry, and creates no database. It reads the active note to build the
+sidebar. Note content changes only when you explicitly choose **Duplicate
+scene** or **Cut scene**.
 
 ## License
 

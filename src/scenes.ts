@@ -8,6 +8,11 @@ export interface Scene {
 
 export type ScenePredicate = (scene: Scene) => boolean;
 
+export interface SceneRange {
+  from: EditorPosition;
+  to: EditorPosition;
+}
+
 /**
  * Extracts single-line HTML comments in document order.
  *
@@ -65,4 +70,23 @@ export function findCurrentScene(
   }
 
   return currentScene;
+}
+
+export function getSceneRange(
+  scenes: readonly Scene[],
+  sceneIndex: number,
+  documentEnd: EditorPosition,
+): SceneRange | null {
+  const scene = scenes[sceneIndex];
+  if (!scene) {
+    return null;
+  }
+
+  const nextScene = scenes[sceneIndex + 1];
+  return {
+    from: { line: scene.line, ch: scene.ch },
+    to: nextScene
+      ? { line: nextScene.line, ch: nextScene.ch }
+      : documentEnd,
+  };
 }
