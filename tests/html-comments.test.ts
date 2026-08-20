@@ -48,6 +48,39 @@ describe("planSceneCommentToggle", () => {
     });
   });
 
+  it("wraps the whole word when the cursor is inside it", () => {
+    expect(planSceneCommentToggle("destinazione", 5, 5)).toEqual({
+      kind: "edit",
+      fromCh: 0,
+      toCh: 12,
+      replacement: "<!-- destinazione -->",
+      selectionFromCh: 17,
+      selectionToCh: 17,
+    });
+  });
+
+  it("recognizes accented letters as part of a word", () => {
+    expect(planSceneCommentToggle("perché", 3, 3)).toMatchObject({
+      kind: "edit",
+      fromCh: 0,
+      toCh: 6,
+      replacement: "<!-- perché -->",
+    });
+  });
+
+  it("does not capture a word at either outside boundary", () => {
+    expect(planSceneCommentToggle("scena", 0, 0)).toMatchObject({
+      replacement: "<!--  -->",
+      fromCh: 0,
+      toCh: 0,
+    });
+    expect(planSceneCommentToggle("scena", 5, 5)).toMatchObject({
+      replacement: "<!--  -->",
+      fromCh: 5,
+      toCh: 5,
+    });
+  });
+
   it("unwraps a marker when the cursor is inside it", () => {
     expect(planSceneCommentToggle("<!-- Scene title -->", 9, 9)).toEqual({
       kind: "edit",
@@ -68,6 +101,22 @@ describe("planSceneCommentToggle", () => {
       selectionFromCh: 0,
       selectionToCh: 11,
     });
+  });
+
+  it("unwraps a marker immediately before or after it", () => {
+    const line = "<!-- Scene title -->";
+    expect(planSceneCommentToggle(line, 0, 0)).toMatchObject({
+      replacement: "Scene title",
+      fromCh: 0,
+      toCh: 20,
+    });
+    expect(planSceneCommentToggle(line, line.length, line.length)).toMatchObject(
+      {
+        replacement: "Scene title",
+        fromCh: 0,
+        toCh: 20,
+      },
+    );
   });
 
   it("rejects a selection that only partly overlaps a comment", () => {

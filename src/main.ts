@@ -223,6 +223,13 @@ export default class SceneNavigatorPlugin extends Plugin {
     const menu = new Menu().setParentElement(parentEl);
     menu.addItem((item) =>
       item
+        .setTitle("Select scene")
+        .setIcon("text-select")
+        .onClick(() => void this.performSceneAction(file, scene, "select")),
+    );
+    menu.addSeparator();
+    menu.addItem((item) =>
+      item
         .setTitle("Copy scene")
         .setIcon("copy")
         .onClick(() => void this.performSceneAction(file, scene, "copy")),
@@ -301,7 +308,7 @@ export default class SceneNavigatorPlugin extends Plugin {
   private async performSceneAction(
     file: TFile,
     targetScene: Scene,
-    action: "copy" | "duplicate" | "cut",
+    action: "select" | "copy" | "duplicate" | "cut",
   ): Promise<void> {
     const match = this.findMarkdownView(file);
     if (!match) {
@@ -330,6 +337,15 @@ export default class SceneNavigatorPlugin extends Plugin {
     }
 
     const sceneText = editor.getRange(range.from, range.to);
+
+    if (action === "select") {
+      this.trackMarkdownView(match.view, match.leaf);
+      this.app.workspace.setActiveLeaf(match.leaf, { focus: true });
+      editor.setSelection(range.from, range.to);
+      editor.scrollIntoView(range, true);
+      editor.focus();
+      return;
+    }
 
     if (action === "copy") {
       if (await this.writeClipboard(sceneText)) {

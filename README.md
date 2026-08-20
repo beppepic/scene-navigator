@@ -21,7 +21,8 @@ file format, and your notes remain fully usable without the plugin.
 - Creates, wraps, or removes scene comments with the **Toggle scene comment**
   command.
 - Opens each comment at its exact editor position.
-- Copies, duplicates, or cuts a complete scene from its comment to the next one.
+- Selects, copies, duplicates, or cuts a complete scene from its comment to the
+  next one.
 - Updates when you switch notes, edit comments, or Obsidian reloads a file.
 - Searches scenes from a compact toolbar modeled after Obsidian's Outline view.
 - Highlights the scene containing the cursor.
@@ -44,6 +45,7 @@ editing a note to create or remove a scene marker:
 
 - With no selection, it inserts `<!--  -->` and places the cursor between the
   spaces.
+- With the cursor inside a word, it wraps the whole word.
 - With text selected on one line, it wraps that text as an HTML comment.
 - With the cursor or selection inside an existing single-line HTML comment, it
   removes the comment markers and preserves the text.
@@ -51,7 +53,7 @@ editing a note to create or remove a scene marker:
 Scene markers must stay on one line. The command refuses multiline selections
 because Scene Navigator intentionally ignores multiline HTML comments. To add a
 keyboard shortcut, open **Settings → Hotkeys** and search for **Scene Navigator:
-Toggle scene comment**.
+Toggle scene comment**. Suggested macOS shortcut: `Shift-Command-,` (`⇧⌘,`).
 
 The magnifying-glass button filters the visible list. The second toolbar button
 enables or disables automatic scrolling to the scene at the current cursor
@@ -60,6 +62,8 @@ position.
 Right-click a scene on desktop, or press and hold it on mobile, to open these
 actions:
 
+- **Select scene** selects the complete scene so Obsidian can display selection
+  statistics such as its word count.
 - **Copy scene** copies everything from the selected HTML comment up to, but not
   including, the next HTML comment.
 - **Duplicate scene** inserts an exact copy at the end of that range.
