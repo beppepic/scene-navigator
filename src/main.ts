@@ -20,6 +20,8 @@ import {
   SceneNavigatorView,
   VIEW_TYPE_SCENE_NAVIGATOR,
 } from "./view";
+import { toggleSceneComment } from "./comment-command";
+import { SceneNavigatorSettingTab } from "./settings";
 
 interface MarkdownViewMatch {
   leaf: WorkspaceLeaf;
@@ -35,6 +37,8 @@ export default class SceneNavigatorPlugin extends Plugin {
   private lastCursorKey: string | null = null;
 
   async onload(): Promise<void> {
+    this.addSettingTab(new SceneNavigatorSettingTab(this.app, this));
+
     this.registerView(
       VIEW_TYPE_SCENE_NAVIGATOR,
       (leaf) => new SceneNavigatorView(leaf, this),
@@ -50,6 +54,12 @@ export default class SceneNavigatorPlugin extends Plugin {
       id: "open-navigator",
       name: "Open navigator",
       callback: () => this.activateView(),
+    });
+
+    this.addCommand({
+      id: "toggle-scene-comment",
+      name: "Toggle scene comment",
+      editorCallback: (editor) => toggleSceneComment(editor),
     });
 
     this.registerEvent(
