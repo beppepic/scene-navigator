@@ -24,6 +24,33 @@ export type SceneCommentTogglePlan =
   | SceneCommentEditPlan
   | SceneCommentErrorPlan;
 
+function isWordCharacter(character: string | undefined): boolean {
+  return character !== undefined && /[\p{L}\p{N}_]/u.test(character);
+}
+
+function findWordRangeAt(
+  line: string,
+  position: number,
+): { fromCh: number; toCh: number } | null {
+  if (
+    !isWordCharacter(line[position - 1]) ||
+    !isWordCharacter(line[position])
+  ) {
+    return null;
+  }
+
+  let fromCh = position;
+  let toCh = position;
+  while (fromCh > 0 && isWordCharacter(line[fromCh - 1])) {
+    fromCh -= 1;
+  }
+  while (toCh < line.length && isWordCharacter(line[toCh])) {
+    toCh += 1;
+  }
+
+  return { fromCh, toCh };
+}
+
 export function findHtmlComments(line: string): HtmlCommentMatch[] {
   const comments: HtmlCommentMatch[] = [];
   const pattern = /<!--(.*?)-->/g;
@@ -103,6 +130,23 @@ export function planSceneCommentToggle(
       kind: "error",
       message: "The selection overlaps an existing HTML comment.",
     };
+  }
+
+  if (!hasSelection) {
+    const wordRange = findWordRangeAt(line, fromCh);
+    if (wordRange) {
+      const selectedText = line.slice(wordRange.fromCh, wordRange.toCh);
+      const cursorCh = wordRange.fromCh + 5 + selectedText.length;
+
+      return {
+        kind: "edit",
+        fromCh: wordRange.fromCh,
+        toCh: wordRange.toCh,
+        replacement: `<!-- ${selectedText} -->`,
+        selectionFromCh: cursorCh,
+        selectionToCh: cursorCh,
+      };
+    }
   }
 
   const selectedText = line.slice(fromCh, toCh);

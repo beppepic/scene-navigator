@@ -2,6 +2,12 @@
 
 All notable changes to Scene Navigator are documented in this file.
 
+## 1.3.0 — 2026-08-20
+
+- Added **Select scene** to select a complete scene from the sidebar.
+- Made **Toggle scene comment** wrap the whole word when invoked inside it.
+- Documented `Shift-Command-,` (`⇧⌘,`) as a suggested macOS shortcut.
+
 ## 1.2.0 — 2026-08-20
 
 - Added the **Toggle scene comment** editor command.

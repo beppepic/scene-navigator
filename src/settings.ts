@@ -23,7 +23,7 @@ export class SceneNavigatorSettingTab extends PluginSettingTab {
       },
       {
         name: "Create or remove a marker",
-        desc: "Use the Toggle scene comment command to create a marker, wrap selected text, or remove an existing marker. Assign a shortcut under Hotkeys if desired.",
+        desc: "Use the Toggle scene comment command to create a marker, wrap selected text, or remove an existing marker. Suggested macOS shortcut: Shift-Command-Comma (⇧⌘,).",
       },
       {
         name: "Portable notes",
@@ -45,7 +45,7 @@ export class SceneNavigatorSettingTab extends PluginSettingTab {
     example.createEl("code", { text: "<!-- scene title -->" });
 
     containerEl.createEl("p", {
-      text: "Use the toggle scene comment command to create a marker, wrap selected text, or remove an existing marker. You can assign the command a shortcut under hotkeys.",
+      text: "Use the toggle scene comment command to create a marker, wrap selected text, or remove an existing marker. Suggested macOS shortcut: Shift-Command-Comma (⇧⌘,).",
     });
 
     containerEl.createEl("p", {
