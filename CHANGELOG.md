@@ -2,6 +2,12 @@
 
 All notable changes to Scene Navigator are documented in this file.
 
+## 1.4.0 — 2026-08-20
+
+- Added **Copy current scene** and **Select current scene** commands for hotkeys.
+- Moved **Copy scene** to the top of the scene context menu.
+- Kept **Cut scene** separated as the destructive action.
+
 ## 1.3.0 — 2026-08-20
 
 - Added **Select scene** to select a complete scene from the sidebar.

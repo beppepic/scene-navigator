@@ -4,6 +4,13 @@ Scene Navigator is a minimal scene outline for Obsidian. It lists single-line
 HTML comments from the active Markdown note and lets you jump to their exact
 position.
 
+When the editor cursor is inside a scene, these commands are also available
+from the Command Palette and can be assigned shortcuts under **Settings →
+Hotkeys**:
+
+- **Scene Navigator: Copy current scene** copies the complete current scene.
+- **Scene Navigator: Select current scene** selects the complete current scene.
+
 ```markdown
 <!-- first encounter – v.07 -->
 ```
@@ -62,10 +69,10 @@ position.
 Right-click a scene on desktop, or press and hold it on mobile, to open these
 actions:
 
-- **Select scene** selects the complete scene so Obsidian can display selection
-  statistics such as its word count.
 - **Copy scene** copies everything from the selected HTML comment up to, but not
   including, the next HTML comment.
+- **Select scene** selects the complete scene so Obsidian can display selection
+  statistics such as its word count.
 - **Duplicate scene** inserts an exact copy at the end of that range.
 - **Cut scene** copies the same range and then removes it from the note.
 

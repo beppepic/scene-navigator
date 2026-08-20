@@ -90,3 +90,14 @@ export function getSceneRange(
       : documentEnd,
   };
 }
+
+export function getCurrentSceneRange(
+  scenes: readonly Scene[],
+  cursor: EditorPosition,
+  documentEnd: EditorPosition,
+): SceneRange | null {
+  const currentScene = findCurrentScene(scenes, cursor);
+  return currentScene
+    ? getSceneRange(scenes, scenes.indexOf(currentScene), documentEnd)
+    : null;
+}
