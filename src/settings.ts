@@ -29,6 +29,10 @@ export class SceneNavigatorSettingTab extends PluginSettingTab {
         name: "Portable notes",
         desc: "Scene markers remain ordinary Markdown-compatible HTML comments. The plugin does not add IDs, metadata, or a proprietary file format.",
       },
+      {
+        name: "Scene actions",
+        desc: "Copy current scene and Select current scene are available as commands. Assign either command a shortcut under Hotkeys.",
+      },
     ];
   }
 
@@ -50,6 +54,10 @@ export class SceneNavigatorSettingTab extends PluginSettingTab {
 
     containerEl.createEl("p", {
       text: "Scene markers remain ordinary Markdown-compatible HTML comments. The plugin does not add ids, metadata, or a proprietary file format.",
+    });
+
+    containerEl.createEl("p", {
+      text: "Copy current scene and select current scene are available as commands. Assign either command a shortcut under hotkeys.",
     });
   }
 }

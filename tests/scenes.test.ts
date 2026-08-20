@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   extractSceneComments,
   findCurrentScene,
+  getCurrentSceneRange,
   getSceneRange,
 } from "../src/scenes";
 
@@ -83,5 +84,27 @@ describe("getSceneRange", () => {
 
   it("returns null for a scene that no longer exists", () => {
     expect(getSceneRange(scenes, -1, { line: 3, ch: 4 })).toBeNull();
+  });
+});
+
+describe("getCurrentSceneRange", () => {
+  const scenes = extractSceneComments(
+    "before\n<!-- first -->\ntext\n<!-- second -->\nlast",
+  );
+  const documentEnd = { line: 4, ch: 4 };
+
+  it("returns the complete scene containing the cursor", () => {
+    expect(
+      getCurrentSceneRange(scenes, { line: 2, ch: 2 }, documentEnd),
+    ).toEqual({
+      from: { line: 1, ch: 0 },
+      to: { line: 3, ch: 0 },
+    });
+  });
+
+  it("returns null before the first scene", () => {
+    expect(
+      getCurrentSceneRange(scenes, { line: 0, ch: 3 }, documentEnd),
+    ).toBeNull();
   });
 });

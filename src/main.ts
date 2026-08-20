@@ -13,6 +13,7 @@ import {
 
 import {
   extractSceneComments,
+  getCurrentSceneRange,
   getSceneRange,
   type Scene,
 } from "./scenes";
@@ -60,6 +61,28 @@ export default class SceneNavigatorPlugin extends Plugin {
       id: "toggle-scene-comment",
       name: "Toggle scene comment",
       editorCallback: (editor) => toggleSceneComment(editor),
+    });
+
+    this.addCommand({
+      id: "copy-current-scene",
+      name: "Copy current scene",
+      editorCallback: (editor, context) =>
+        void this.performCurrentSceneAction(
+          editor,
+          context.file,
+          "copy",
+        ),
+    });
+
+    this.addCommand({
+      id: "select-current-scene",
+      name: "Select current scene",
+      editorCallback: (editor, context) =>
+        void this.performCurrentSceneAction(
+          editor,
+          context.file,
+          "select",
+        ),
     });
 
     this.registerEvent(
@@ -223,16 +246,15 @@ export default class SceneNavigatorPlugin extends Plugin {
     const menu = new Menu().setParentElement(parentEl);
     menu.addItem((item) =>
       item
-        .setTitle("Select scene")
-        .setIcon("text-select")
-        .onClick(() => void this.performSceneAction(file, scene, "select")),
-    );
-    menu.addSeparator();
-    menu.addItem((item) =>
-      item
         .setTitle("Copy scene")
         .setIcon("copy")
         .onClick(() => void this.performSceneAction(file, scene, "copy")),
+    );
+    menu.addItem((item) =>
+      item
+        .setTitle("Select scene")
+        .setIcon("text-select")
+        .onClick(() => void this.performSceneAction(file, scene, "select")),
     );
     menu.addItem((item) =>
       item
@@ -374,6 +396,41 @@ export default class SceneNavigatorPlugin extends Plugin {
     editor.focus();
     this.render(file, extractSceneComments(editor.getValue()));
     this.updateCurrentSceneFromEditor(true);
+  }
+
+  private async performCurrentSceneAction(
+    editor: Editor,
+    file: TFile | null,
+    action: "select" | "copy",
+  ): Promise<void> {
+    if (!file) {
+      new Notice("No Markdown note is active.");
+      return;
+    }
+
+    const markdown = editor.getValue();
+    const scenes = extractSceneComments(markdown);
+    const range = getCurrentSceneRange(
+      scenes,
+      editor.getCursor("head"),
+      editor.offsetToPos(markdown.length),
+    );
+
+    if (!range) {
+      new Notice("No scene exists at the current position.");
+      return;
+    }
+
+    if (action === "copy") {
+      if (await this.writeClipboard(editor.getRange(range.from, range.to))) {
+        new Notice("Scene copied.");
+      }
+      return;
+    }
+
+    editor.setSelection(range.from, range.to);
+    editor.scrollIntoView(range, true);
+    editor.focus();
   }
 
   private async writeClipboard(text: string): Promise<boolean> {
