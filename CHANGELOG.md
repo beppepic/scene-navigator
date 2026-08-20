@@ -2,6 +2,12 @@
 
 All notable changes to Scene Navigator are documented in this file.
 
+## 1.2.0 — 2026-08-20
+
+- Added the **Toggle scene comment** editor command.
+- Added an informational plugin settings page with the scene marker convention.
+- Added tests for creating, wrapping, and removing scene comments.
+
 ## 1.1.1 — 2026-08-14
 
 - Restored the Scene Navigator ribbon launcher on mobile only.

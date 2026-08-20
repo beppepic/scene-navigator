@@ -18,6 +18,8 @@ file format, and your notes remain fully usable without the plugin.
 ## Features
 
 - Lists every single-line `<!-- HTML comment -->` in document order.
+- Creates, wraps, or removes scene comments with the **Toggle scene comment**
+  command.
 - Opens each comment at its exact editor position.
 - Copies, duplicates, or cuts a complete scene from its comment to the next one.
 - Updates when you switch notes, edit comments, or Obsidian reloads a file.
@@ -36,6 +38,20 @@ file format, and your notes remain fully usable without the plugin.
    Palette. On mobile, use either the Scene Navigator ribbon button or the same
    command.
 3. Select a scene to move the editor cursor to that comment.
+
+Run **Scene Navigator: Toggle scene comment** in the Command Palette while
+editing a note to create or remove a scene marker:
+
+- With no selection, it inserts `<!--  -->` and places the cursor between the
+  spaces.
+- With text selected on one line, it wraps that text as an HTML comment.
+- With the cursor or selection inside an existing single-line HTML comment, it
+  removes the comment markers and preserves the text.
+
+Scene markers must stay on one line. The command refuses multiline selections
+because Scene Navigator intentionally ignores multiline HTML comments. To add a
+keyboard shortcut, open **Settings → Hotkeys** and search for **Scene Navigator:
+Toggle scene comment**.
 
 The magnifying-glass button filters the visible list. The second toolbar button
 enables or disables automatic scrolling to the scene at the current cursor
@@ -61,8 +77,9 @@ Scene Navigator intentionally:
 - reads only single-line HTML comments;
 - ignores multiline HTML comments and `%% Obsidian comments %%`;
 - does not depend on headings;
-- changes note content only when you explicitly choose **Duplicate scene** or
-  **Cut scene**, using ordinary undoable editor operations;
+- changes note content only when you explicitly run **Toggle scene comment** or
+  choose **Duplicate scene** or **Cut scene**, using ordinary undoable editor
+  operations;
 - does not add IDs, tags, frontmatter, block IDs, or other syntax;
 - does not create auxiliary vault files or store scenes in a database.
 
@@ -111,7 +128,7 @@ releases and are not committed to the repository.
 Scene Navigator works locally. It makes no network requests, collects no
 telemetry, and creates no database. It reads the active note to build the
 sidebar. Note content changes only when you explicitly choose **Duplicate
-scene** or **Cut scene**.
+scene** or **Cut scene**, or run **Toggle scene comment**.
 
 ## License
 
