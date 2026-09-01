@@ -22,6 +22,26 @@ The comment appears in the sidebar as:
 Scene Navigator uses ordinary HTML comments. It does not introduce a custom
 file format, and your notes remain fully usable without the plugin.
 
+## Quick start
+
+1. Add a single-line comment such as `<!-- first encounter – v.07 -->` to a
+   Markdown note.
+2. Run **Scene Navigator: Open navigator** or select its ribbon icon.
+3. Select a scene name in the sidebar to jump to its marker.
+
+## Commands and suggested hotkeys
+
+Scene Navigator does not assign default hotkeys, so it cannot overwrite an
+existing shortcut. Open **Settings → Hotkeys**, search for **Scene Navigator**,
+and assign only the commands you want.
+
+| Command | What it does | Suggested macOS hotkey |
+| --- | --- | --- |
+| **Open navigator** | Opens and reveals the Scene Navigator sidebar. | Use the ribbon icon |
+| **Toggle scene comment** | Creates, wraps, or removes a single-line scene marker. | `⇧⌘,` |
+| **Copy current scene** | Copies the complete scene containing the cursor. | `⇧⌘S` |
+| **Select current scene** | Selects the complete scene containing the cursor. | `⌥⇧⌘S` |
+
 ## Features
 
 - Lists every single-line `<!-- HTML comment -->` in document order.
@@ -99,6 +119,12 @@ separate filtering boundary so an optional convention such as `– v.` can be
 added later without changing the file format or navigation model.
 
 ## Installation
+
+### Installation with BRAT
+
+1. Install and enable [BRAT](https://github.com/TfTHacker/obsidian42-brat).
+2. Open **Settings → BRAT** and choose **Add beta plugin**.
+3. Enter `beppepic/scene-navigator` and enable the plugin.
 
 ### Community Plugins
 
