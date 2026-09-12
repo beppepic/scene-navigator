@@ -455,7 +455,10 @@ export default class SceneNavigatorPlugin extends Plugin {
 
   private render(file: TFile | null, scenes: Scene[]): void {
     const key = `${file?.path ?? ""}\n${scenes
-      .map((scene) => `${scene.line}:${scene.ch}:${scene.text}`)
+      .map(
+        (scene) =>
+          `${scene.line}:${scene.ch}:${scene.breakBefore ? "break" : ""}:${scene.text}`,
+      )
       .join("\n")}`;
 
     if (key === this.renderKey) {

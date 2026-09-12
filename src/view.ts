@@ -307,6 +307,13 @@ export class SceneNavigatorView extends ItemView {
       return;
     }
 
+    if (scene.breakBefore) {
+      this.listEl.createDiv({
+        cls: "scene-navigator-divider",
+        attr: { role: "separator" },
+      });
+    }
+
     const treeItemEl = this.listEl.createDiv({
       cls: "tree-item scene-navigator-tree-item",
     });

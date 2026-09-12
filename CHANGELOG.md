@@ -2,6 +2,12 @@
 
 All notable changes to Scene Navigator are documented in this file.
 
+## 1.5.0 — 2026-09-13
+
+- Added native-themed scene break dividers for standalone `----` lines.
+- Kept three- and five-hyphen lines outside the scene break convention.
+- Added parser coverage for scene break placement and consecutive dividers.
+
 ## 1.4.0 — 2026-08-20
 
 - Added **Copy current scene** and **Select current scene** commands for hotkeys.

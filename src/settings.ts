@@ -33,6 +33,10 @@ export class SceneNavigatorSettingTab extends PluginSettingTab {
         name: "Scene actions",
         desc: "Copy current scene and Select current scene are available as commands. Assign either command a shortcut under Hotkeys.",
       },
+      {
+        name: "Scene breaks",
+        desc: "A standalone line containing exactly four hyphens (----) appears as a divider before the following scene.",
+      },
     ];
   }
 
@@ -58,6 +62,10 @@ export class SceneNavigatorSettingTab extends PluginSettingTab {
 
     containerEl.createEl("p", {
       text: "Copy current scene and select current scene are available as commands. Assign either command a shortcut under hotkeys.",
+    });
+
+    containerEl.createEl("p", {
+      text: "A standalone line containing exactly four hyphens (----) appears as a divider before the following scene.",
     });
   }
 }
