@@ -36,6 +36,52 @@ describe("extractSceneComments", () => {
     ]);
   });
 
+  it("attaches an exact four-hyphen divider to the following scene", () => {
+    const markdown = [
+      "<!-- first -->",
+      "text",
+      "  ----  ",
+      "<!-- second -->",
+    ].join("\n");
+
+    expect(extractSceneComments(markdown)).toEqual([
+      { text: "first", line: 0, ch: 0 },
+      { text: "second", line: 3, ch: 0, breakBefore: true },
+    ]);
+  });
+
+  it("does not treat three or five hyphens as scene dividers", () => {
+    const markdown = [
+      "<!-- first -->",
+      "---",
+      "<!-- second -->",
+      "-----",
+      "<!-- third -->",
+    ].join("\n");
+
+    expect(extractSceneComments(markdown)).toEqual([
+      { text: "first", line: 0, ch: 0 },
+      { text: "second", line: 2, ch: 0 },
+      { text: "third", line: 4, ch: 0 },
+    ]);
+  });
+
+  it("collapses consecutive four-hyphen dividers into one break", () => {
+    const markdown = [
+      "<!-- first -->",
+      "----",
+      "----",
+      "<!-- second -->",
+    ].join("\n");
+
+    expect(extractSceneComments(markdown)[1]).toEqual({
+      text: "second",
+      line: 3,
+      ch: 0,
+      breakBefore: true,
+    });
+  });
+
   it("supports a future filter without changing extraction", () => {
     const markdown = "<!-- note --><!-- scene – v.01 -->";
     const versionedOnly = extractSceneComments(markdown, (scene) =>

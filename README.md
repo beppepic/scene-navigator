@@ -45,6 +45,8 @@ and assign only the commands you want.
 ## Features
 
 - Lists every single-line `<!-- HTML comment -->` in document order.
+- Shows a native-themed divider before the next scene when the document contains
+  a standalone `----` line.
 - Creates, wraps, or removes scene comments with the **Toggle scene comment**
   command.
 - Opens each comment at its exact editor position.
@@ -101,12 +103,25 @@ are ordinary editor changes and can be undone with Obsidian's **Undo** command.
 
 You can drag the view between sidebars using Obsidian's standard pane controls.
 
+### Scene breaks
+
+Scene Navigator recognizes this exact standalone line as a scene break:
+
+```markdown
+----
+```
+
+Optional surrounding whitespace is ignored. Three or five hyphens are not
+treated as scene breaks. The divider is visual and non-interactive; Scene
+Navigator never changes the source line.
+
 ## Scope
 
 Scene Navigator intentionally:
 
 - reads only single-line HTML comments;
 - ignores multiline HTML comments and `%% Obsidian comments %%`;
+- reads exact `----` lines only to display scene breaks;
 - does not depend on headings;
 - changes note content only when you explicitly run **Toggle scene comment** or
   choose **Duplicate scene** or **Cut scene**, using ordinary undoable editor

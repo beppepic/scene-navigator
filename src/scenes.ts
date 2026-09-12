@@ -4,6 +4,7 @@ export interface Scene {
   text: string;
   line: number;
   ch: number;
+  breakBefore?: boolean;
 }
 
 export type ScenePredicate = (scene: Scene) => boolean;
@@ -25,10 +26,16 @@ export function extractSceneComments(
 ): Scene[] {
   const scenes: Scene[] = [];
   const lines = markdown.split(/\r?\n/);
+  let breakBeforeNextScene = false;
 
   for (let line = 0; line < lines.length; line += 1) {
     const sourceLine = lines[line];
     if (sourceLine === undefined) {
+      continue;
+    }
+
+    if (sourceLine.trim() === "----") {
+      breakBeforeNextScene = true;
       continue;
     }
 
@@ -41,6 +48,11 @@ export function extractSceneComments(
         line,
         ch: match.index,
       };
+
+      if (breakBeforeNextScene) {
+        scene.breakBefore = true;
+        breakBeforeNextScene = false;
+      }
 
       if (predicate(scene)) {
         scenes.push(scene);

@@ -3,6 +3,13 @@
 }
 
 .workspace-leaf-content[data-type="scene-navigator-view"]
+  .scene-navigator-divider {
+  border-top: var(--border-width, 1px) solid
+    var(--divider-color, var(--background-modifier-border));
+  margin: var(--size-4-2) var(--size-4-2);
+}
+
+.workspace-leaf-content[data-type="scene-navigator-view"]
   .scene-navigator-item
   .tree-item-inner {
   overflow: hidden;
