@@ -2,6 +2,11 @@
 
 All notable changes to Scene Navigator are documented in this file.
 
+## 1.5.2 — 2026-09-13
+
+- Matched scene break dividers to Obsidian's native navigation indentation guide color.
+- Preserved the existing divider thickness and spacing.
+
 ## 1.5.1 — 2026-09-13
 
 - Increased scene break contrast using the active theme's muted text color.
